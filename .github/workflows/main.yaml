@@ -68,6 +68,6 @@ jobs:
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: ReeceStack
-          template: infra/cloudformation.yaml
+          template: infra/cloudformation.yml
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
