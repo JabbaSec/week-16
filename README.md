@@ -1,6 +1,6 @@
 # Week 16 lab
 
-[![Lint and test and deploy](https://github.com/warwick-cybersecurity-WM145-24/week-16-lab/actions/workflows/main.yaml/badge.svg)](https://github.com/warwick-cybersecurity-WM145-24/week-16-lab/actions/workflows/main.yaml)
+[![Lint and test and deploy](https://github.com/JabbaSec/week-16/actions/workflows/main.yaml/badge.svg)](https://github.com/JabbaSec/week-16/actions/workflows/main.yaml)
 
 Week 16 Lab exercises on CI and CD. Using Github actions
 
@@ -44,11 +44,11 @@ firefox http://localhost:3000/?language=gurmukhi
 
 ## Your mission
 
-1. [ ] Fork the repo
-1. [ ] Get it working locally
-1. [ ] implement the missing steps in `.github/workflows/main.yaml`
-   1. [ ] Add supply chain scanning and fix any issues
-   1. [ ] Add unit testing
+1. [x] Fork the repo
+1. [x] Get it working locally
+1. [x] implement the missing steps in `.github/workflows/main.yaml`
+   1. [x] Add supply chain scanning and fix any issues
+   1. [x] Add unit testing
 1. [ ] Create base infra as per two objectives and target arch below
 1. [ ] Get infra scripts and continious deployment working by implementing `/infra/deploy.sh`
 1. [ ] Implement the `/about` page and watch it deploy end-to-end
@@ -57,16 +57,16 @@ firefox http://localhost:3000/?language=gurmukhi
 
 ### Objective 1 - get base infra working - get networking and CI working
 
-- [ ] Create VPC: `10.0.0.0/22`
+- [x] Create VPC: `10.0.0.0/22`
 - [ ] Get Github actions to deploy your IaC
-- [ ] Create Pub subnet:
-  - [ ] a: `10.0.0.0/24`
-- [ ] Create Pvt Subnets:
-  - [ ] a: `10.0.2.0/24`
-- [ ] Create IGW
-- [ ] Create Public Route Table
-- [ ] Create NAT gateway
-- [ ] Create Private Route Table
+- [x] Create Pub subnet:
+  - [x] a: `10.0.0.0/24`
+- [x] Create Pvt Subnets:
+  - [x] a: `10.0.2.0/24`
+- [x] Create IGW
+- [x] Create Public Route Table
+- [x] Create NAT gateway
+- [x] Create Private Route Table
 
 ### Objective 2 - create secondary infra
 
