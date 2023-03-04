@@ -7,6 +7,7 @@ Parameters:
     Default: 10.0.0.0/22
   StudentName:
     Type: String
+    Default: student-name
   
   PubSubnetACidr:
     Description: IP range for the public subnet in the first Availability Zone
