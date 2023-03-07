@@ -5,6 +5,7 @@ Parameters:
     Description: CIDR block for the VPC
     Type: String
     Default: 10.0.0.0/22
+
   StudentName:
     Type: String
     Default: student-name
@@ -15,37 +16,15 @@ Parameters:
     Default: 10.0.0.0/24
 
   PrivSubnetACidr:
-    Description: IP range for the public subnet in the first Availability Zone
+    Description: IP range for the private subnet in the first Availability Zone
     Type: String
     Default: 10.0.2.0/24
-
-# Security Group
-  SecurityGroup:
-      Type: AWS::EC2::SecurityGroup
-      Properties:
-        GroupDescription: Enable port 80
-        VpcId: !Ref MyVPC
-        SecurityGroupIngress:
-          - IpProtocol: tcp
-          # todo figure out port forwarding
-            FromPort: '80'
-            ToPort: '8080'
-            CidrIp: '0.0.0.0/0'
-          - IpProtocol: tcp
-            FromPort: '22'
-            ToPort: '22'
-            CidrIp: '0.0.0.0/0'
-        Tags:
-          - Key: Name
-            Value: !Sub "${StudentName}-security-group"
 
 Resources:
 # VPC
   MyVPC:
     Type: AWS::EC2::VPC
     Properties:
-      SecurityGroupIds:
-        - !Ref SecurityGroup
       CidrBlock: !Ref VpcCidr
       Tags: 
         - Key: Name
