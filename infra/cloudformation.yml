@@ -126,11 +126,11 @@ Resources:
       SubnetId: !Ref PrivSubnetA
 
 # Demo Instance
-  EC2Instance:
-    Type: AWS::EC2::Instance
-    Properties:
-      InstanceType: t2.micro
-      SubnetId: !Ref PubSubnetA
-      Tags:
-        - Key: Name
-          Value: !Sub "${StudentName}-demo"
+#  EC2Instance:
+#    Type: AWS::EC2::Instance
+#    Properties:
+#      InstanceType: t2.micro
+#      SubnetId: !Ref PubSubnetA
+#      Tags:
+#        - Key: Name
+#          Value: !Sub "${StudentName}-demo"
