@@ -3,10 +3,6 @@
 # and can be used to provision your VM
 # NB it's run as root, so no need for sudo
 
-if [! aws sts get-caller-identity]; then
-    echo >&2 "aws creds not working"
-    exit 2
-fi
 
 # debug logs are here
 readonly logName="/var/log/server-setup.log"
@@ -25,7 +21,7 @@ yum install -y \
 
 # put your own github username here
 echo "Setting up ssh access keys" | tee -a "${logName}"
-curl -s https://github.com/jujhars13.keys | tee -a /home/ec2-user/.ssh/authorized_keys
+curl -s https://github.com/jabbasec.keys | tee -a /home/ec2-user/.ssh/authorized_keys
 
 # add ec2 user to the docker group which allows docket to run without being a super-user
 usermod -aG docker ec2-user

@@ -130,7 +130,22 @@ Resources:
       RouteTableId: !Ref PrivRouteTable
       SubnetId: !Ref PrivSubnetA
 
-
- 
-
-
+# Security Group
+  SecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: Enable port 80
+        VpcId: !Ref MyVPC
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+          # todo figure out port forwarding
+            FromPort: '80'
+            ToPort: '8080'
+            CidrIp: '0.0.0.0/0'
+          - IpProtocol: tcp
+            FromPort: '22'
+            ToPort: '22'
+            CidrIp: '0.0.0.0/0'
+        Tags:
+          - Key: Name
+            Value: !Sub "${StudentName}-security-group"
