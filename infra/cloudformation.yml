@@ -136,7 +136,7 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t2.micro
-      InstanceId: testinstanceidaaf
+      InstanceId: ami-008f4281d2c5de558
       SubnetId: !Ref PubSubnetA
       Tags:
         - Key: Name
