@@ -137,7 +137,10 @@ Resources:
     Properties:
       ImageId: ami-086b3de06dafe36c5
       InstanceType: t2.micro
-      SubnetId: !Ref PubSubnetA
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: "true"
+          DeviceIndex: "0"
+          SubnetId: !Ref PubSubnetA
       Tags:
         - Key: Name
           Value: !Sub "${StudentName}-demo"
