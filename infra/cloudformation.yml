@@ -146,71 +146,71 @@ Resources:
         - Key: Name
           Value: !Sub "${StudentName}-demo"
 
-# Load Balancer
-LoadBalancer:
-  Type: AWS::ElasticLoadBalancingV2::LoadBalancer
-  Properties:
-    Name: !Sub "${StudentName}-load-balancer"
-    Scheme: internet-facing
-    Subnets:
-      - !Ref PubSubnetA
-    SecurityGroups:
-      - !Ref LoadBalancerSecurityGroup
-  Tags:
-    - Key: Name
-      Value: !Sub "${StudentName}-load-balancer"
+  # Load Balancer
+  LoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: !Sub "${StudentName}-load-balancer"
+      Scheme: internet-facing
+      Subnets:
+        - !Ref PubSubnetA
+      SecurityGroups:
+        - !Ref LoadBalancerSecurityGroup
+      Tags:
+        - Key: Name
+          Value: !Sub "${StudentName}-load-balancer"
 
-TargetGroup:
-  Type: AWS::ElasticLoadBalancingV2::TargetGroup
-  Properties:
-    Name: !Sub "${StudentName}-target-group"
-    Port: 80
-    Protocol: HTTP
-    TargetType: instance
-    VpcId: !Ref MyVPC
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: !Sub "${StudentName}-target-group"
+      Port: 80
+      Protocol: HTTP
+      TargetType: instance
+      VpcId: !Ref MyVPC
 
-Listener:
-  Type: AWS::ElasticLoadBalancingV2::Listener
-  Properties:
-    DefaultActions:
-      - TargetGroupArn: !Ref TargetGroup
-        Type: forward
-    LoadBalancerArn: !Ref LoadBalancer
-    Port: 80
-    Protocol: HTTP
+  Listener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - TargetGroupArn: !Ref TargetGroup
+          Type: forward
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 80
+      Protocol: HTTP
 
-LoadBalancerSecurityGroup:
-  Type: AWS::EC2::SecurityGroup
-  Properties:
-    GroupDescription: Allow inbound traffic to the load balancer
-    VpcId: !Ref MyVPC
-    SecurityGroupIngress:
-      - CidrIp: 0.0.0.0/0
-        IpProtocol: tcp
-        FromPort: 80
-        ToPort: 80
+  LoadBalancerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow inbound traffic to the load balancer
+      VpcId: !Ref MyVPC
+      SecurityGroupIngress:
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
 
-# Security Group
-SecurityGroup:
-  Type: AWS::EC2::SecurityGroup
-  Properties:
-    GroupDescription: Allow HTTP and HTTPS traffic
-    VpcId: !Ref MyVPC
-    SecurityGroupIngress:
-      - IpProtocol: tcp
-        FromPort: 80
-        ToPort: 80
-        CidrIp: 0.0.0.0/0
-      - IpProtocol: tcp
-        FromPort: 8000
-        ToPort: 8000
-        CidrIp: 0.0.0.0/0
-    SecurityGroupEgress:
-      - IpProtocol: tcp
-        FromPort: 80
-        ToPort: 80
-        CidrIp: 0.0.0.0/0
-      - IpProtocol: tcp
-        FromPort: 8000
-        ToPort: 8000
-        CidrIp: 0.0.0.0/0
+  # Security Group
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow HTTP and HTTPS traffic
+      VpcId: !Ref MyVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 8000
+          ToPort: 8000
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 8000
+          ToPort: 8000
+          CidrIp: 0.0.0.0/0
