@@ -107,10 +107,14 @@ Resources:
             - !Ref WebServerSecurityGroup
           SubnetId: !Ref PvtSubnetA
       UserData:
-        Fn::Base64: !Sub |
-          #!/bin/bash
-          echo "<h1>Welcome to my website!</h1>" > /var/www/html/index.html
-          nohup python -m SimpleHTTPServer 8000 &
+        Fn::Base64: 
+          !Sub |
+              #!/bin/bash
+              yum update -y
+              yum install -y httpd.x86_64
+              systemctl start httpd.service
+              systemctl enable httpd.service
+              echo ?Hello World from $(hostname -f)? > /var/www/html/index.html
       Tags:
         - Key: Name
           Value: WebServerInstance
