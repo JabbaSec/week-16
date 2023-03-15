@@ -139,13 +139,13 @@ Resources:
 
 
 # Connect the load balancer to the instances
-  # MyTargetGroup:
-  #   Type: AWS::ElasticLoadBalancingV2::TargetGroup
-  #   Properties:
-  #     Port: 80
-  #     Protocol: TCP
-  #     TargetType: ip
-  #     VpcId: !Ref MyVpc
+  MyTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Port: 80
+      Protocol: TCP
+      TargetType: ip
+      VpcId: !Ref MyVpc
 
 # Add the instance to the target group
   MyTargetGroupInstance:
