@@ -1,0 +1,99 @@
+Description: >
+  Networking architecture
+
+# Parameters for easy editing
+Parameters:
+  StudentName:
+    Type: String
+    Default: student-name
+
+# Create the VPC
+Resources:
+  MyVpc:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/22
+
+# Create the public subnet
+  PubSubnetA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.0.0/24
+      VpcId: !Ref MyVpc
+
+# Create the private subnet
+  PvtSubnetA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.2.0/24
+      VpcId: !Ref MyVpc
+
+# Create the Internet Gateway (IGW)
+  MyIgw:
+    Type: AWS::EC2::InternetGateway
+
+# Attach the IGW to the VPC
+  AttachIgw:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref MyVpc
+      InternetGatewayId: !Ref MyIgw
+
+# Create the public route table
+  PubRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref MyVpc
+
+# Create the NAT Gateway
+  MyNatGateway:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: NatGatewayEIP.AllocationId
+      SubnetId: !Ref PubSubnetA
+
+# Create the private route table
+  PvtRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref MyVpc
+
+# Add a route to the public route table for the internet
+  PubRouteInternet:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PubRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref MyIgw
+
+# Add a route to the private route table for the NAT gateway
+  PvtRouteNat:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PvtRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref MyNatGateway
+
+# Create the network load balancer
+  MyNlb:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Scheme: internal
+      Type: network
+
+# Create the EC2 instance
+  MyInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-0c55b159cbfafe1f0
+      SubnetId: !Ref PvtSubnetA
+
+# Connect the load balancer to the instances
+  MyTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Port: 80
+      Protocol: TCP
+      TargetType: ip
+      VpcId: !Ref MyVpc

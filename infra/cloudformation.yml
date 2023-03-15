@@ -16,13 +16,18 @@ Parameters:
     Type: String
     Default: 10.0.0.0/24
 
+  PubSubnetBCidr:
+    Description: IP range for the public subnet in the first Availability Zone
+    Type: String
+    Default: 10.0.1.0/24
+
   PrivSubnetACidr:
     Description: IP range for the private subnet in the first Availability Zone
     Type: String
     Default: 10.0.2.0/24
 
 Resources:
-# VPC
+  # VPC
   MyVPC:
     Type: AWS::EC2::VPC
     Properties:
@@ -31,7 +36,7 @@ Resources:
         - Key: Name
           Value: !Sub "${StudentName}-vpc"
 
-# Public Subnet A
+  # Public Subnet A
   PubSubnetA:
     Type: AWS::EC2::Subnet
     Properties:
@@ -41,7 +46,18 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub "${StudentName}-pub-subnet-a"
-  
+
+  # Public Subnet B
+  PubSubnetB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: !Ref PubSubnetBCidr
+      AvailabilityZone: "eu-west-2b"
+      Tags:
+        - Key: Name
+          Value: !Sub "${StudentName}-pub-subnet-b"
+
   InternetGateway:
     Type: AWS::EC2::InternetGateway
     Properties:
@@ -49,7 +65,7 @@ Resources:
         - Key: Name
           Value: !Sub "${StudentName}-igw"
 
-# VPC Gateway Attachement
+  # VPC Gateway Attachment
   VpcGatewayAttachment:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
@@ -70,20 +86,26 @@ Resources:
           Value: !Sub "${StudentName}-pub-route-a"
       VpcId: !Ref MyVPC
 
-# Public Route
+  # Public Route
   PublicRouteA:
     Type: AWS::EC2::Route
     DependsOn: InternetGateway
     Properties:
-       RouteTableId: !Ref PublicRouteTable
-       DestinationCidrBlock: 0.0.0.0/0
-       GatewayId: !Ref InternetGateway
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
 
   PubSubnetRouteTableAssociationA:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       RouteTableId: !Ref PublicRouteTable
       SubnetId: !Ref PubSubnetA
+
+  PubSubnetRouteTableAssociationB:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PubSubnetB
 
 # NAT Gateway
   NatGatewayEIP:
@@ -154,6 +176,7 @@ Resources:
       Scheme: internet-facing
       Subnets:
         - !Ref PubSubnetA
+        - !Ref PubSubnetB
       SecurityGroups:
         - !Ref LoadBalancerSecurityGroup
       Tags:
