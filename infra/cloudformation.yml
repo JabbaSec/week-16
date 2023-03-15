@@ -80,6 +80,9 @@ Resources:
     Properties:
       Scheme: internal
       Type: network
+      Subnets:
+        - !Ref PrivateSubnetA
+        - !Ref PrivateSubnetB
 
 # Create the EC2 instance
   MyInstance:
