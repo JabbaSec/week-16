@@ -139,13 +139,13 @@ Resources:
 
 
 # Connect the load balancer to the instances
-  MyTargetGroup:
+  TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Port: 80
-      Protocol: TCP
-      TargetType: ip
       VpcId: !Ref MyVpc
+      Port: 80
+      Protocol: HTTP
+      TargetType: instance
 
 # Associate the target group with the load balancer
   LoadBalancerListener:
@@ -156,7 +156,7 @@ Resources:
       Port: 80
       DefaultActions:
         - Type: forward
-          TargetGroupArn: !Ref MyTargetGroup
+          TargetGroupArn: !Ref TargetGroup
 
 # Output the DNS name of the load balancer
 Outputs:
