@@ -103,7 +103,7 @@ Resources:
           DeviceIndex: 0
           GroupSet:
             - !Ref WebServerSecurityGroup
-          SubnetId: !Ref PubSunetA
+          SubnetId: !Ref PubSubnetA
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
