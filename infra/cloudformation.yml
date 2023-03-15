@@ -45,12 +45,18 @@ Resources:
     Properties:
       VpcId: !Ref MyVpc
 
+  MyEIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+
 # Create the NAT Gateway
   MyNatGateway:
     Type: AWS::EC2::NatGateway
     Properties:
-      AllocationId: NatGatewayEIP.AllocationId
+      AllocationId: MyEIP.AllocationId
       SubnetId: !Ref PubSubnetA
+    DependsOn: MyEIP
 
 # Create the private route table
   PvtRouteTable:
