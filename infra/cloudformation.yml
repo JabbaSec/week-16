@@ -83,7 +83,7 @@ Resources:
       NatGatewayId: !Ref MyNatGateway
 
 # Create the network load balancer
-  MyNlb:
+  LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       Scheme: internal
@@ -93,12 +93,51 @@ Resources:
         - !Ref PvtSubnetA
 
 # Create the EC2 instance
-  MyInstance:
+  WebServerInstance:
     Type: AWS::EC2::Instance
     Properties:
-      InstanceType: t2.micro
       ImageId: ami-086b3de06dafe36c5
-      SubnetId: !Ref PvtSubnetA
+      InstanceType: t2.micro
+      KeyName: myKeyPair
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: true
+          DeviceIndex: 0
+          GroupSet:
+            - !Ref WebServerSecurityGroup
+          SubnetId: !Ref PvtSubnetA
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          echo "<h1>Welcome to my website!</h1>" > /var/www/html/index.html
+          nohup python -m SimpleHTTPServer 8000 &
+      Tags:
+        - Key: Name
+          Value: WebServerInstance
+
+# Webserver Security Group
+  WebServerSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupName: WebServerSecurityGroup
+        GroupDescription: Security group for web server instances
+        VpcId: !Ref MyVpc
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: 80
+            ToPort: 80
+            CidrIp: 0.0.0.0/0
+          - IpProtocol: tcp
+            FromPort: 443
+            ToPort: 443
+            CidrIp: 0.0.0.0/0
+          - IpProtocol: tcp
+            FromPort: 8000
+            ToPort: 8000
+            CidrIp: 0.0.0.0/0
+        SecurityGroupEgress:
+          - IpProtocol: -1
+            CidrIp: 0.0.0.0/0
+
 
 # Connect the load balancer to the instances
   MyTargetGroup:
