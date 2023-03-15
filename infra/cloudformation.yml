@@ -19,7 +19,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       CidrBlock: 10.0.0.0/24
-      AvailabilityZone: eu-west-1a
+      AvailabilityZone: eu-west-2a
       VpcId: !Ref MyVpc
 
 # Create the private subnet
@@ -27,7 +27,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       CidrBlock: 10.0.2.0/24
-      AvailabilityZone: eu-west-1b
+      AvailabilityZone: eu-west-2b
       VpcId: !Ref MyVpc
 
 # Create the Internet Gateway (IGW)
