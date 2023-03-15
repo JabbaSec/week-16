@@ -19,6 +19,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       CidrBlock: 10.0.0.0/24
+      AvailabilityZone: eu-west-1a
       VpcId: !Ref MyVpc
 
 # Create the private subnet
@@ -26,6 +27,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       CidrBlock: 10.0.2.0/24
+      AvailabilityZone: eu-west-1b
       VpcId: !Ref MyVpc
 
 # Create the Internet Gateway (IGW)
@@ -95,7 +97,7 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t2.micro
-      ImageId: ami-0c55b159cbfafe1f0
+      ImageId: ami-086b3de06dafe36c5
       SubnetId: !Ref PvtSubnetA
 
 # Connect the load balancer to the instances
