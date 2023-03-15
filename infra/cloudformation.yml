@@ -98,7 +98,6 @@ Resources:
     Properties:
       ImageId: ami-086b3de06dafe36c5
       InstanceType: t2.micro
-      KeyName: myKeyPair
       NetworkInterfaces:
         - AssociatePublicIpAddress: true
           DeviceIndex: 0
