@@ -1,239 +1,99 @@
 Description: >
   Networking architecture
 
+# Parameters for easy editing
 Parameters:
-  VpcCidr:
-    Description: CIDR block for the VPC
-    Type: String
-    Default: 10.0.0.0/22
-
   StudentName:
     Type: String
     Default: student-name
-  
-  PubSubnetACidr:
-    Description: IP range for the public subnet in the first Availability Zone
-    Type: String
-    Default: 10.0.0.0/24
 
-  PubSubnetBCidr:
-    Description: IP range for the public subnet in the first Availability Zone
-    Type: String
-    Default: 10.0.1.0/24
-
-  PrivSubnetACidr:
-    Description: IP range for the private subnet in the first Availability Zone
-    Type: String
-    Default: 10.0.2.0/24
-
+# Create the VPC
 Resources:
-  # VPC
-  MyVPC:
+  MyVpc:
     Type: AWS::EC2::VPC
     Properties:
-      CidrBlock: !Ref VpcCidr
-      Tags: 
-        - Key: Name
-          Value: !Sub "${StudentName}-vpc"
+      CidrBlock: 10.0.0.0/22
 
-  # Public Subnet A
+# Create the public subnet
   PubSubnetA:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref MyVPC
-      CidrBlock: !Ref PubSubnetACidr
-      AvailabilityZone: "eu-west-2a"
-      Tags:
-        - Key: Name
-          Value: !Sub "${StudentName}-pub-subnet-a"
+      CidrBlock: 10.0.0.0/24
+      VpcId: !Ref MyVpc
 
-  # Public Subnet B
-  PubSubnetB:
+# Create the private subnet
+  PvtSubnetA:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref MyVPC
-      CidrBlock: !Ref PubSubnetBCidr
-      AvailabilityZone: "eu-west-2b"
-      Tags:
-        - Key: Name
-          Value: !Sub "${StudentName}-pub-subnet-b"
+      CidrBlock: 10.0.2.0/24
+      VpcId: !Ref MyVpc
 
-  InternetGateway:
+# Create the Internet Gateway (IGW)
+  MyIgw:
     Type: AWS::EC2::InternetGateway
-    Properties:
-      Tags:
-        - Key: Name
-          Value: !Sub "${StudentName}-igw"
 
-  # VPC Gateway Attachment
-  VpcGatewayAttachment:
+# Attach the IGW to the VPC
+  AttachIgw:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
-      InternetGatewayId: !Ref InternetGateway
-      VpcId: !Ref MyVPC
+      VpcId: !Ref MyVpc
+      InternetGatewayId: !Ref MyIgw
 
-  InternetGatewayAttachment:
-    Type: AWS::EC2::VPCGatewayAttachment
-    Properties:
-      InternetGatewayId: !Ref InternetGateway
-      VpcId: !Ref MyVPC
-
-  PublicRouteTable:
+# Create the public route table
+  PubRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
-      Tags:
-        - Key: Name
-          Value: !Sub "${StudentName}-pub-route-a"
-      VpcId: !Ref MyVPC
+      VpcId: !Ref MyVpc
 
-  # Public Route
-  PublicRouteA:
-    Type: AWS::EC2::Route
-    DependsOn: InternetGateway
-    Properties:
-      RouteTableId: !Ref PublicRouteTable
-      DestinationCidrBlock: 0.0.0.0/0
-      GatewayId: !Ref InternetGateway
-
-  PubSubnetRouteTableAssociationA:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      RouteTableId: !Ref PublicRouteTable
-      SubnetId: !Ref PubSubnetA
-
-  PubSubnetRouteTableAssociationB:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      RouteTableId: !Ref PublicRouteTable
-      SubnetId: !Ref PubSubnetB
-
-# NAT Gateway
-  NatGatewayEIP:
-    Type: AWS::EC2::EIP
-    DependsOn: InternetGatewayAttachment
-    Properties:
-      Domain: vpc
-
-  NatGateway:
+# Create the NAT Gateway
+  MyNatGateway:
     Type: AWS::EC2::NatGateway
     Properties:
-      AllocationId: !GetAtt NatGatewayEIP.AllocationId
+      AllocationId: NatGatewayEIP.AllocationId
       SubnetId: !Ref PubSubnetA
 
-# Private Subnet A
-  PrivSubnetA:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: !Ref MyVPC
-      CidrBlock: !Ref PrivSubnetACidr
-      AvailabilityZone: "eu-west-2a"
-      Tags:
-        - Key: Name
-          Value: !Sub "${StudentName}-priv-subnet-a"
-
-# Private Route
-  PrivRouteTable:
+# Create the private route table
+  PvtRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
-      Tags:
-        - Key: Name
-          Value: !Sub "${StudentName}-priv-route-a"
-      VpcId: !Ref MyVPC
+      VpcId: !Ref MyVpc
 
-  PrivRouteA:
+# Add a route to the public route table for the internet
+  PubRouteInternet:
     Type: AWS::EC2::Route
-    DependsOn: InternetGateway
     Properties:
-       RouteTableId: !Ref PrivRouteTable
-       DestinationCidrBlock: 0.0.0.0/0
-       NatGatewayId: !Ref NatGateway
+      RouteTableId: !Ref PubRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref MyIgw
 
-  PrivSubnetRouteTableAssociation:
-    Type: AWS::EC2::SubnetRouteTableAssociation
+# Add a route to the private route table for the NAT gateway
+  PvtRouteNat:
+    Type: AWS::EC2::Route
     Properties:
-      RouteTableId: !Ref PrivRouteTable
-      SubnetId: !Ref PrivSubnetA
+      RouteTableId: !Ref PvtRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref MyNatGateway
 
-# Demo Instance
-  EC2Instance:
-    Type: AWS::EC2::Instance
-    Properties:
-      ImageId: ami-086b3de06dafe36c5
-      InstanceType: t2.micro
-      NetworkInterfaces:
-        - AssociatePublicIpAddress: "true"
-          DeviceIndex: "0"
-          SubnetId: !Ref PubSubnetA
-      Tags:
-        - Key: Name
-          Value: !Sub "${StudentName}-demo"
-
-  # Load Balancer
-  LoadBalancer:
+# Create the network load balancer
+  MyNlb:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
-      Name: !Sub "${StudentName}-load-balancer"
-      Scheme: internet-facing
-      Subnets:
-        - !Ref PubSubnetA
-        - !Ref PubSubnetB
-      SecurityGroups:
-        - !Ref LoadBalancerSecurityGroup
-      Tags:
-        - Key: Name
-          Value: !Sub "${StudentName}-load-balancer"
+      Scheme: internal
+      Type: network
 
-  TargetGroup:
+# Create the EC2 instance
+  MyInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-0c55b159cbfafe1f0
+      SubnetId: !Ref PvtSubnetA
+
+# Connect the load balancer to the instances
+  MyTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Name: !Sub "${StudentName}-target-group"
       Port: 80
-      Protocol: HTTP
-      TargetType: instance
-      VpcId: !Ref MyVPC
-
-  Listener:
-    Type: AWS::ElasticLoadBalancingV2::Listener
-    Properties:
-      DefaultActions:
-        - TargetGroupArn: !Ref TargetGroup
-          Type: forward
-      LoadBalancerArn: !Ref LoadBalancer
-      Port: 80
-      Protocol: HTTP
-
-  LoadBalancerSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: Allow inbound traffic to the load balancer
-      VpcId: !Ref MyVPC
-      SecurityGroupIngress:
-        - CidrIp: 0.0.0.0/0
-          IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-
-  # Security Group
-  SecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: Allow HTTP and HTTPS traffic
-      VpcId: !Ref MyVPC
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          CidrIp: 0.0.0.0/0
-        - IpProtocol: tcp
-          FromPort: 8000
-          ToPort: 8000
-          CidrIp: 0.0.0.0/0
-      SecurityGroupEgress:
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          CidrIp: 0.0.0.0/0
-        - IpProtocol: tcp
-          FromPort: 8000
-          ToPort: 8000
-          CidrIp: 0.0.0.0/0
+      Protocol: TCP
+      TargetType: ip
+      VpcId: !Ref MyVpc
