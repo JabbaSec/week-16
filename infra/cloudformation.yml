@@ -1,240 +1,241 @@
 Parameters:
-    VPCName:
-      Description: CIDR range for our VPC
-      Type: String
-      Default: DemoCustomVPC 
-    VPCCidr:
-      Description: CIDR range for our VPC
-      Type: String
-      Default: 10.0.0.0/16
-    PrivateSubnetACidr:
-      Description: Private Subnet IP Range
-      Type: String
-      Default: 10.0.0.0/24
-    PrivateSubnetBCidr:
-      Description: Private Subnet IP Range
-      Type: String
-      Default: 10.0.1.0/24
-    PublicSubnetACidr:
-      Description: Public Subnet IP Range
-      Type: String
-      Default: 10.0.2.0/24
-    PublicSubnetBCidr:
-      Description: Public Subnet IP Range
-      Type: String
-      Default: 10.0.3.0/24
-    AvailabilityZoneA:
-      Description: Avaibalbility Zone 1
-      Type: String
-      Default: ap-south-1a
-    AvailabilityZoneB:
-      Description: Avaibalbility Zone 2
-      Type: String
-      Default: ap-south-1b     
-  Resources:
-    DemoVPC:
-      Type: AWS::EC2::VPC
-      Properties:
-        EnableDnsSupport: true
-        EnableDnsHostnames: true
-        CidrBlock: !Ref VPCCidr
-        Tags:
-          -
-            Key: Name
-            Value: !Ref VPCName
+  VPCName:
+    Description: CIDR range for our VPC
+    Type: String
+    Default: DemoCustomVPC 
+  VPCCidr:
+    Description: CIDR range for our VPC
+    Type: String
+    Default: 10.0.0.0/16
+  PrivateSubnetACidr:
+    Description: Private Subnet IP Range
+    Type: String
+    Default: 10.0.0.0/24
+  PrivateSubnetBCidr:
+    Description: Private Subnet IP Range
+    Type: String
+    Default: 10.0.1.0/24
+  PublicSubnetACidr:
+    Description: Public Subnet IP Range
+    Type: String
+    Default: 10.0.2.0/24
+  PublicSubnetBCidr:
+    Description: Public Subnet IP Range
+    Type: String
+    Default: 10.0.3.0/24
+  AvailabilityZoneA:
+    Description: Avaibalbility Zone 1
+    Type: String
+    Default: eu-west-2a
+  AvailabilityZoneB:
+    Description: Avaibalbility Zone 2
+    Type: String
+    Default: eu-west-2b
 
-    PrivateSubnetA:
-      Type: AWS::EC2::Subnet
-      Properties:
-        VpcId: !Ref DemoVPC
-        AvailabilityZone: !Ref AvailabilityZoneA
-        CidrBlock: !Ref PrivateSubnetACidr 
-        Tags:
-          -
-            Key: Name
-            Value: !Sub '${VPCName}-PrivateSubnetA'       
+Resources:
+  DemoVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      CidrBlock: !Ref VPCCidr
+      Tags:
+        -
+          Key: Name
+          Value: !Ref VPCName
 
-    PrivateSubnetB:
-      Type: AWS::EC2::Subnet
-      Properties:
-        VpcId: !Ref DemoVPC
-        AvailabilityZone: !Ref AvailabilityZoneB
-        CidrBlock: !Ref PrivateSubnetBCidr
-        Tags:
-          -
-            Key: Name
-            Value: !Sub '${VPCName}-PrivateSubnetB'
-        
-    PublicSubnetA:
-      Type: AWS::EC2::Subnet
-      Properties:
-        VpcId: !Ref DemoVPC
-        AvailabilityZone: !Ref AvailabilityZoneA
-        CidrBlock: !Ref PublicSubnetACidr
-        MapPublicIpOnLaunch: true 
-        Tags:
-          -
-            Key: Name
-            Value: !Sub '${VPCName}-PublicSubnetA'        
+  PrivateSubnetA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref DemoVPC
+      AvailabilityZone: !Ref AvailabilityZoneA
+      CidrBlock: !Ref PrivateSubnetACidr 
+      Tags:
+        -
+          Key: Name
+          Value: !Sub '${VPCName}-PrivateSubnetA'       
 
-    PublicSubnetB:
-      Type: AWS::EC2::Subnet
-      Properties:
-        VpcId: !Ref DemoVPC
-        AvailabilityZone: !Ref AvailabilityZoneB
-        CidrBlock: !Ref PublicSubnetBCidr
-        MapPublicIpOnLaunch: true
-        Tags:
-          -
-            Key: Name
-            Value: !Sub '${VPCName}-PublicSubnetB'
+  PrivateSubnetB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref DemoVPC
+      AvailabilityZone: !Ref AvailabilityZoneB
+      CidrBlock: !Ref PrivateSubnetBCidr
+      Tags:
+        -
+          Key: Name
+          Value: !Sub '${VPCName}-PrivateSubnetB'
+      
+  PublicSubnetA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref DemoVPC
+      AvailabilityZone: !Ref AvailabilityZoneA
+      CidrBlock: !Ref PublicSubnetACidr
+      MapPublicIpOnLaunch: true 
+      Tags:
+        -
+          Key: Name
+          Value: !Sub '${VPCName}-PublicSubnetA'        
+
+  PublicSubnetB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref DemoVPC
+      AvailabilityZone: !Ref AvailabilityZoneB
+      CidrBlock: !Ref PublicSubnetBCidr
+      MapPublicIpOnLaunch: true
+      Tags:
+        -
+          Key: Name
+          Value: !Sub '${VPCName}-PublicSubnetB'
 
 
-    InternetGateway:
-      Type: AWS::EC2::InternetGateway
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
 
-    VPCGatewayAttachment:
-      Type: "AWS::EC2::VPCGatewayAttachment"
-      Properties:
-        VpcId: !Ref DemoVPC
-        InternetGatewayId: !Ref InternetGateway
+  VPCGatewayAttachment:
+    Type: "AWS::EC2::VPCGatewayAttachment"
+    Properties:
+      VpcId: !Ref DemoVPC
+      InternetGatewayId: !Ref InternetGateway
 
-    PublicRouteTable:
-      Type: AWS::EC2::RouteTable
-      Properties:
-        VpcId: !Ref DemoVPC
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref DemoVPC
 
-    PublicRoute:
-      Type: AWS::EC2::Route
-      DependsOn: VPCGatewayAttachment
-      Properties:
-        RouteTableId: !Ref PublicRouteTable
-        DestinationCidrBlock: 0.0.0.0/0
-        GatewayId: !Ref InternetGateway
+  PublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: VPCGatewayAttachment
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
 
-    PublicSubnetRouteTableAssociationA:
-      Type: AWS::EC2::SubnetRouteTableAssociation
-      Properties:
-        SubnetId: !Ref PublicSubnetA
-        RouteTableId: !Ref PublicRouteTable
+  PublicSubnetRouteTableAssociationA:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnetA
+      RouteTableId: !Ref PublicRouteTable
 
-    PublicSubnetRouteTableAssociationB:
-      Type: AWS::EC2::SubnetRouteTableAssociation
-      Properties:
-        SubnetId: !Ref PublicSubnetB
-        RouteTableId: !Ref PublicRouteTable
+  PublicSubnetRouteTableAssociationB:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnetB
+      RouteTableId: !Ref PublicRouteTable
 
-    ElasticIPA:
-      Type: AWS::EC2::EIP
-      Properties:
-        Domain: vpc
+  ElasticIPA:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
 
-    ElasticIPB:
-      Type: AWS::EC2::EIP
-      Properties:
-        Domain: vpc
+  ElasticIPB:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
 
-    NATGatewayA:
-      Type: AWS::EC2::NatGateway
-      Properties:
-        AllocationId: !GetAtt ElasticIPA.AllocationId
-        SubnetId: !Ref PublicSubnetA
+  NATGatewayA:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: !GetAtt ElasticIPA.AllocationId
+      SubnetId: !Ref PublicSubnetA
 
-    NATGatewayB:
-      Type: AWS::EC2::NatGateway
-      Properties:
-        AllocationId: !GetAtt ElasticIPB.AllocationId
-        SubnetId: !Ref PublicSubnetB
+  NATGatewayB:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: !GetAtt ElasticIPB.AllocationId
+      SubnetId: !Ref PublicSubnetB
 
-    PrivateRouteTableA:
-      Type: AWS::EC2::RouteTable
-      Properties:
-        VpcId: !Ref DemoVPC
+  PrivateRouteTableA:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref DemoVPC
 
-    PrivateRouteTableB:
-      Type: AWS::EC2::RouteTable
-      Properties:
-        VpcId: !Ref DemoVPC
+  PrivateRouteTableB:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref DemoVPC
 
-    PrivateRouteToInternetA:
-      Type: AWS::EC2::Route
-      Properties:
-        RouteTableId: !Ref PrivateRouteTableA
-        DestinationCidrBlock: 0.0.0.0/0
-        NatGatewayId: !Ref NATGatewayA
+  PrivateRouteToInternetA:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PrivateRouteTableA
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NATGatewayA
 
-    PrivateRouteToInternetB:
-      Type: AWS::EC2::Route
-      Properties:
-        RouteTableId: !Ref PrivateRouteTableB
-        DestinationCidrBlock: 0.0.0.0/0
-        NatGatewayId: !Ref NATGatewayB
+  PrivateRouteToInternetB:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PrivateRouteTableB
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NATGatewayB
 
-    PrivateSubnetRouteTableAssociationA:
-      Type: AWS::EC2::SubnetRouteTableAssociation
-      Properties:
-        SubnetId: !Ref PrivateSubnetA
-        RouteTableId: !Ref PrivateRouteTableA
+  PrivateSubnetRouteTableAssociationA:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnetA
+      RouteTableId: !Ref PrivateRouteTableA
 
-    PrivateSubnetRouteTableAssociationB:
-      Type: AWS::EC2::SubnetRouteTableAssociation
-      Properties:
-        SubnetId: !Ref PrivateSubnetB
-        RouteTableId: !Ref PrivateRouteTableB
-        
-    #By this time, we have internet- lets launch an instance
-    DemoInstance:
-      Type: AWS::EC2::Instance
-      Properties: 
-        ImageId: ami-08df646e18b182346
-        InstanceType: t2.micro
-        AvailabilityZone: !Ref AvailabilityZoneA
-        SubnetId: !Ref PublicSubnetA
-        KeyName: MyDemoEC2eyPair
-        SecurityGroupIds: 
-          - !Ref DemoSecurityGroup
-        UserData:
-          Fn::Base64: 
-            !Sub |
-               #!/bin/bash
-               yum update -y
-               yum install -y httpd.x86_64
-               systemctl start httpd.service
-               systemctl enable httpd.service
-               echo ?Hello World from $(hostname -f)? > /var/www/html/index.html
-    DemoSecurityGroup:
-      Type: AWS::EC2::SecurityGroup
-      Properties:
-        VpcId: !Ref DemoVPC
-        GroupDescription: SG to allow SSH and HTTP
-        SecurityGroupIngress:
-          - IpProtocol: tcp
-            FromPort: '22'
-            ToPort: '22'
-            CidrIp: '0.0.0.0/0'
-          - IpProtocol: tcp
-            FromPort: 80
-            ToPort: 80
-            CidrIp: 0.0.0.0/0
-        Tags:
-          - Key: Name
-            Value: EC2-SG
-  Outputs:
-    VPCId:
-      Description: vpc id 
-      Value: !Ref DemoVPC
-    PublicSubnetA:
-      Description: SubnetId of public subnet A
-      Value: !Ref PublicSubnetA
-    PublicSubnetB:
-      Description: SubnetId of public subnet B
-      Value: !Ref PublicSubnetB 
-    PrivateSubnetA:
-      Description: SubnetId of private subnet A
-      Value: !Ref PrivateSubnetA
-    PrivateSubnetB:
-      Description: SubnetId of private subnet B
-      Value: !Ref PublicSubnetB 
-    DemoInstanceId:
-       Description: Demo Instance Id 
-       Value: !Ref DemoInstance
+  PrivateSubnetRouteTableAssociationB:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnetB
+      RouteTableId: !Ref PrivateRouteTableB
+      
+  #By this time, we have internet- lets launch an instance
+  DemoInstance:
+    Type: AWS::EC2::Instance
+    Properties: 
+      ImageId: ami-08df646e18b182346
+      InstanceType: t2.micro
+      AvailabilityZone: !Ref AvailabilityZoneA
+      SubnetId: !Ref PublicSubnetA
+      KeyName: MyDemoEC2eyPair
+      SecurityGroupIds: 
+        - !Ref DemoSecurityGroup
+      UserData:
+        Fn::Base64: 
+          !Sub |
+              #!/bin/bash
+              yum update -y
+              yum install -y httpd.x86_64
+              systemctl start httpd.service
+              systemctl enable httpd.service
+              echo ?Hello World from $(hostname -f)? > /var/www/html/index.html
+  DemoSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: !Ref DemoVPC
+      GroupDescription: SG to allow SSH and HTTP
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: '0.0.0.0/0'
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: EC2-SG
+Outputs:
+  VPCId:
+    Description: vpc id 
+    Value: !Ref DemoVPC
+  PublicSubnetA:
+    Description: SubnetId of public subnet A
+    Value: !Ref PublicSubnetA
+  PublicSubnetB:
+    Description: SubnetId of public subnet B
+    Value: !Ref PublicSubnetB 
+  PrivateSubnetA:
+    Description: SubnetId of private subnet A
+    Value: !Ref PrivateSubnetA
+  PrivateSubnetB:
+    Description: SubnetId of private subnet B
+    Value: !Ref PublicSubnetB 
+  DemoInstanceId:
+      Description: Demo Instance Id 
+      Value: !Ref DemoInstance
