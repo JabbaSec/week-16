@@ -183,15 +183,14 @@ Resources:
       SubnetId: !Ref PrivateSubnetB
       RouteTableId: !Ref PrivateRouteTableB
       
-  #By this time, we have internet- lets launch an instance
   DemoInstance:
     Type: AWS::EC2::Instance
     Properties: 
-      ImageId: ami-08df646e18b182346
+      ImageId: ami-086b3de06dafe36c5
       InstanceType: t2.micro
       AvailabilityZone: !Ref AvailabilityZoneA
       SubnetId: !Ref PublicSubnetA
-      KeyName: MyDemoEC2eyPair
+      # KeyName: MyDemoEC2eyPair
       SecurityGroupIds: 
         - !Ref DemoSecurityGroup
       UserData:
